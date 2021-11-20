@@ -1,1 +1,13 @@
+div {
+  margin: 15px;
+}
+#title {
+  text-align: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 
+#category-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

@@ -31,8 +31,8 @@ const App = () => {
   
   return (
     <div>
-      <h1>Trivia Time!</h1>
-      <h4>Click on a category below to get a question.</h4>
+      <h1 id="title">Trivia Time!</h1>
+      <h4 id="title">Click on a category below to get a question.</h4>
       <section id="category-buttons">
         {categories.map((cat) => {
           return <CategoryButton category={cat} getQuestion={getQuestion}/>
