@@ -4,10 +4,42 @@ div {
 #title {
   text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: aqua;
+  border-radius: 25px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#cat-button {
+  border-radius: 10px;
+  margin: 2px;
+  font-size: medium;
 }
 
 #category-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
+  flex-wrap:wrap;
+}
+
+#question {
+  font-size: large;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: aqua;
+}
+
+#answer {
+  font-size: large;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: fuchsia;
+}
+
+#tsparticles {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
 }
