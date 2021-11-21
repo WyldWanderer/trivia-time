@@ -42,7 +42,6 @@ const App = () => {
     console.log(container);
   };
   
-  
   return (
     <>
     <Particles
@@ -111,7 +110,7 @@ const App = () => {
               enable: true,
               value_area: 800,
             },
-            value: 80,
+            value: 40,
           },
           opacity: {
             value: 0.5,
