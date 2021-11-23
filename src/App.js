@@ -13,6 +13,19 @@ const App = () => {
   const [pastQuestions, addToPastQuestions] = useState({})
   const headers = {'X-Api-Key': API_KEY}
 
+  String.prototype.hashCode = function() {
+    let hash = 0;
+    if (this.length === 0) {
+      return hash;
+    }
+    for (let i = 0; i < this.length; i++){
+      let char = this.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash;
+  }
+
   const fetchPastQuestions = () => {
     const db = getDatabase()
     const questionsInDB = ref(db, 'past_questions')
@@ -25,6 +38,15 @@ const App = () => {
   useEffect(() => {
     fetchPastQuestions()
   }, [])
+
+  const checkForPastQuestion = (question) => {
+    const hashToCheck = question.hashCode()
+    const fetchedHashes = Object.keys(pastQuestions)
+    const fetchedQuestions = fetchedHashes.map((q) => {
+      return q.toString() === hashToCheck ? true : false;
+    })
+    return fetchedQuestions.includes(true) ? true : false;
+  }
 
   const getQuestion = (category) => {
     const replaceAmpersand = category.replace("&", "")
@@ -39,28 +61,20 @@ const App = () => {
         }
       })
       .then((data) => {
+        if(checkForPastQuestion('1044853251')) {
+          console.log("Fetched a question that was already asked, fetching something new")
+          getQuestion(category)
+        } else {
         addQuestion(data[0].question)
         addAnswer(data[0].answer)
         trackAlreadyAskedQuestions(data[0].question)
+        }
       })
   }
 
   const resetQA = () => {
     addQuestion("")
     addAnswer("")
-  }
-
-  String.prototype.hashCode = function() {
-    let hash = 0;
-    if (this.length === 0) {
-      return hash;
-    }
-    for (let i = 0; i < this.length; i++){
-      let char = this.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
-    }
-    return hash;
   }
 
   const trackAlreadyAskedQuestions = (question) => {
