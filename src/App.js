@@ -3,12 +3,28 @@ import React, {useState, useEffect} from 'react';
 import Particles from 'react-tsparticles';
 import CategoryButton from './components/CategoryButton';
 import { API_KEY } from './constants'
+import { app } from './components/Database'
+import { getDatabase, ref, set, onValue } from '@firebase/database';
 
 const App = () => {
   const [categories, addCategory] = useState(["Art & Literature", "Language", "Science & Nature", "General", "Food & Drink", "People & Places", "Geography", "History & Holidays", "Entertainment", "Toys & Games", "Music", "Mathematics", "Religion & Mythology", "Sports & Leisure"])
   const [question, addQuestion] = useState("")
   const [answer, addAnswer] = useState("")
+  const [pastQuestions, addToPastQuestions] = useState({})
   const headers = {'X-Api-Key': API_KEY}
+
+  const fetchPastQuestions = () => {
+    const db = getDatabase()
+    const questionsInDB = ref(db, 'past_questions')
+    onValue(questionsInDB, (snapshot) => {
+      const data = snapshot.val()
+      addToPastQuestions(data)
+    })
+  }
+
+  useEffect(() => {
+    fetchPastQuestions()
+  }, [])
 
   const getQuestion = (category) => {
     const replaceAmpersand = category.replace("&", "")
@@ -25,6 +41,7 @@ const App = () => {
       .then((data) => {
         addQuestion(data[0].question)
         addAnswer(data[0].answer)
+        trackAlreadyAskedQuestions(data[0].question)
       })
   }
 
@@ -32,14 +49,38 @@ const App = () => {
     addQuestion("")
     addAnswer("")
   }
+
+  String.prototype.hashCode = function() {
+    let hash = 0;
+    if (this.length === 0) {
+      return hash;
+    }
+    for (let i = 0; i < this.length; i++){
+      let char = this.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash;
+  }
+
+  const trackAlreadyAskedQuestions = (question) => {
+    const db = getDatabase()
+    let hashedQuestion = question.hashCode()
+    let today = new Date()
+    let dateAsked = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+    set(ref(db, "past_questions/" + hashedQuestion), {
+      hashedQuestion : hashedQuestion,
+      dateAsked : dateAsked  
+    })
+  }
  
   const particlesInit = (main) => {
-    console.log(main);
+    //console.log(main);
     // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
   };
 
   const particlesLoaded = (container) => {
-    console.log(container);
+    //console.log(container);
   };
   
   return (
