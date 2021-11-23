@@ -61,13 +61,13 @@ const App = () => {
         }
       })
       .then((data) => {
-        if(checkForPastQuestion('1044853251')) {
+        if(checkForPastQuestion(data[0].question)) {
           console.log("Fetched a question that was already asked, fetching something new")
           getQuestion(category)
         } else {
         addQuestion(data[0].question)
         addAnswer(data[0].answer)
-        trackAlreadyAskedQuestions(data[0].question)
+        trackAlreadyAskedQuestions(data[0].question, data[0].answer)
         }
       })
   }
@@ -77,13 +77,14 @@ const App = () => {
     addAnswer("")
   }
 
-  const trackAlreadyAskedQuestions = (question) => {
+  const trackAlreadyAskedQuestions = (question, answer) => {
     const db = getDatabase()
     let hashedQuestion = question.hashCode()
     let today = new Date()
     let dateAsked = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
     set(ref(db, "past_questions/" + hashedQuestion), {
-      hashedQuestion : hashedQuestion,
+      question : question,
+      answer : answer,
       dateAsked : dateAsked  
     })
   }
