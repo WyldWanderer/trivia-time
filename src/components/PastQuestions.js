@@ -6,7 +6,7 @@ const PastQuestionsComponent = (props) => {
     const questionKeys = Object.keys(props.pastQuestions)
     return (
         <>
-            <button id="home-btn"><Link to="/">Home</Link></button>
+            <button id="home-btn"><Link to="/">Go Back to Main Screen</Link></button>
             {questionKeys.map((question) => {
                 return <QuestionCard question={props.pastQuestions[question].question} answer={props.pastQuestions[question].answer} date={props.pastQuestions[question].dateAsked}/>
             })}
