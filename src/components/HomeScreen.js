@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 const HomeScreen = (props) => {
     return (
         <>
+            <div id="title">
+                <h1>Trivia Time!</h1>
+                <h4>Click on a category below to get a question.</h4>
+            </div>
             <section id="category-buttons">
                 {props.category.map((cat) => {
                     return <CategoryButton category={cat} getQuestion={props.getQuestion}/>

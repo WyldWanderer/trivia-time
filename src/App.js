@@ -188,10 +188,6 @@ const App = () => {
         detectRetina: true,
       }}
     />
-      <div id="title">
-        <h1>Trivia Time!</h1>
-        <h4>Click on a category below to get a question.</h4>
-      </div>
       <div>
         <Routes>
           <Route path="/" element={<HomeScreen category={categories} getQuestion={getQuestion} resetQA={resetQA} question={question} answer={answer}/>}/>    
