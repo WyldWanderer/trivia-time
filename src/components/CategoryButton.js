@@ -1,10 +1,8 @@
 import React from "react";
 
-function CategoryButton(props) {
+const CategoryButton = (props) => {
     return (
-        <button id="cat-button" onClick={() => props.getQuestion(props.category)}>{props.category}</button>
-            
-        
+        <button id="cat-button" onClick={() => props.getQuestion(props.category)}>{props.category}</button> 
     )
 }
 

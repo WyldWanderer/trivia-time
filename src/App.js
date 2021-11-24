@@ -1,16 +1,18 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import Particles from 'react-tsparticles';
-import CategoryButton from './components/CategoryButton';
-import { API_KEY } from './constants'
-import { app } from './components/Database'
+import HomeScreen from './components/HomeScreen'
+import { API_KEY } from './constants';
+import { app } from './components/Database';
 import { getDatabase, ref, set, onValue } from '@firebase/database';
+import { Route, Routes} from "react-router-dom";
+import PastQuestionsComponent from './components/PastQuestions';
 
 const App = () => {
-  const [categories, addCategory] = useState(["Art & Literature", "Language", "Science & Nature", "General", "Food & Drink", "People & Places", "Geography", "History & Holidays", "Entertainment", "Toys & Games", "Music", "Mathematics", "Religion & Mythology", "Sports & Leisure"])
+  const categories = ["Art & Literature", "Language", "Science & Nature", "General", "Food & Drink", "People & Places", "Geography", "History & Holidays", "Entertainment", "Toys & Games", "Music", "Mathematics", "Religion & Mythology", "Sports & Leisure"]
   const [question, addQuestion] = useState("")
   const [answer, addAnswer] = useState("")
-  const [pastQuestions, addToPastQuestions] = useState({})
+  const [pastQuestions, addToPastQuestions] = useState()
   const headers = {'X-Api-Key': API_KEY}
 
   String.prototype.hashCode = function() {
@@ -39,13 +41,22 @@ const App = () => {
     fetchPastQuestions()
   }, [])
 
+  const resetQA = () => {
+    addQuestion("")
+    addAnswer("")
+  }
+
   const checkForPastQuestion = (question) => {
     const hashToCheck = question.hashCode()
-    const fetchedHashes = Object.keys(pastQuestions)
-    const fetchedQuestions = fetchedHashes.map((q) => {
-      return q.toString() === hashToCheck ? true : false;
-    })
-    return fetchedQuestions.includes(true) ? true : false;
+    if (pastQuestions) {
+      const fetchedHashes = Object.keys(pastQuestions)
+      const fetchedQuestions = fetchedHashes.map((q) => {
+        return q.toString() === hashToCheck ? true : false;
+      })
+      return fetchedQuestions.includes(true) ? true : false;
+    } else {
+      return false
+    }
   }
 
   const getQuestion = (category) => {
@@ -70,11 +81,6 @@ const App = () => {
         trackAlreadyAskedQuestions(data[0].question, data[0].answer)
         }
       })
-  }
-
-  const resetQA = () => {
-    addQuestion("")
-    addAnswer("")
   }
 
   const trackAlreadyAskedQuestions = (question, answer) => {
@@ -187,16 +193,10 @@ const App = () => {
         <h4>Click on a category below to get a question.</h4>
       </div>
       <div>
-        <section id="category-buttons">
-          {categories.map((cat) => {
-            return <CategoryButton category={cat} getQuestion={getQuestion}/>
-          })}
-        </section>
-        <span>
-          <h4 id="question">Question: {question}</h4>
-          <h4 id="answer">Answer: {answer}</h4>
-          <button id="cat-button" onClick={resetQA}>Reset</button>
-        </span>
+        <Routes>
+          <Route path="/" element={<HomeScreen category={categories} getQuestion={getQuestion} resetQA={resetQA} question={question} answer={answer}/>}/>    
+          <Route path="/past-questions" element={<PastQuestionsComponent pastQuestions={pastQuestions}/>}/>
+        </Routes>
       </div>
     </>
   );
