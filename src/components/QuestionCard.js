@@ -1,7 +1,6 @@
 import React from "react";
 
 const QuestionCard = (props) => {
-    console.log(props)
     return (
         <div id="question-card">
             <h4 id="question">Question: {props.question}</h4>

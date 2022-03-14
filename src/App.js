@@ -50,10 +50,10 @@ const App = () => {
     const hashToCheck = question.hashCode()
     if (pastQuestions) {
       const fetchedHashes = Object.keys(pastQuestions)
-      const fetchedQuestions = fetchedHashes.map((q) => {
-        return q.toString() === hashToCheck ? true : false;
+      const fetchedQuestions = fetchedHashes.filter((q) => {
+        return q === hashToCheck.toString();
       })
-      return fetchedQuestions.includes(true) ? true : false;
+      return fetchedQuestions.length >= 1 ? true : false;
     } else {
       return false
     }
@@ -185,7 +185,7 @@ const App = () => {
             value: 5,
           },
         },
-        detectRetina: true,
+        detectRetina: false,
       }}
     />
       <div>
