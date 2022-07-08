@@ -2,18 +2,31 @@ import './App.css';
 import React, {useState, useEffect} from 'react';
 import Particles from 'react-tsparticles';
 import HomeScreen from './components/HomeScreen'
-import { API_KEY } from './constants';
 import { app } from './components/Database';
 import { getDatabase, ref, set, onValue } from '@firebase/database';
 import { Route, Routes} from "react-router-dom";
 import PastQuestionsComponent from './components/PastQuestions';
 
 const App = () => {
-  const categories = ["Art & Literature", "Language", "Science & Nature", "General", "Food & Drink", "People & Places", "Geography", "History & Holidays", "Entertainment", "Toys & Games", "Music", "Mathematics", "Religion & Mythology", "Sports & Leisure"]
+  const categories = {
+    "General Knowledge" : 9,
+    "Entertainment" : [10,11,12,13,14,15,16,29,31,32],
+    "Science & Nature" : 17,
+    "Technology & Mathematics" : [18, 19, 30],
+    "Mythology" : 20,
+    "Sports" : 21,
+    "Geography" : 22,
+    "History" : 23,
+    "Politics" : 24,
+    "Art" : 25,
+    "Celebrities": 26,
+    "Animals": 27,
+    "Vehicles": 28
+  }
   const [question, addQuestion] = useState("")
   const [answer, addAnswer] = useState("")
   const [pastQuestions, addToPastQuestions] = useState()
-  const headers = {'X-Api-Key': API_KEY}
+  const [difficultyLevel, changeDifficulty] = useState()
 
   String.prototype.hashCode = function() {
     let hash = 0;
@@ -46,6 +59,11 @@ const App = () => {
     addAnswer("")
   }
 
+  const handleDifficultyChange = (e) => {
+    let newDifficulty = e.target.name
+    changeDifficulty(newDifficulty)
+  }
+
   const checkForPastQuestion = (question) => {
     const hashToCheck = question.hashCode()
     if (pastQuestions) {
@@ -60,10 +78,13 @@ const App = () => {
   }
 
   const getQuestion = (category) => {
-    const replaceAmpersand = category.replace("&", "")
-    const noSpacesCat = replaceAmpersand.replace(/\s/g, "")
-    const apiFriendlyCategory = noSpacesCat.toLowerCase()
-    fetch(`https://api.api-ninjas.com/v1/trivia?category=${apiFriendlyCategory}`, {headers})
+    let categoryId = ""
+    if (category === "Entertainment" || category === "Technology & Mathematics") {  
+      categoryId = categories[category][Math.floor(Math.random() * categories[category].length)]
+    } else {
+      categoryId = categories[category]
+    }
+    fetch(`https://opentdb.com/api.php?amount=1&category=${categoryId}&type=multiple&difficulty=${difficultyLevel}`)
       .then((response) => {
         if(response.ok) {
           return response.json();
@@ -72,13 +93,14 @@ const App = () => {
         }
       })
       .then((data) => {
-        if(checkForPastQuestion(data[0].question)) {
+        console.log(data)
+        if(checkForPastQuestion(data.results[0].question)) {
           console.log("Fetched a question that was already asked, fetching something new")
           getQuestion(category)
         } else {
-        addQuestion(data[0].question)
-        addAnswer(data[0].answer)
-        trackAlreadyAskedQuestions(data[0].question, data[0].answer)
+        addQuestion(data.results[0].question.replace(/&quot;/g, '"'))
+        addAnswer(data.results[0].correct_answer)
+        trackAlreadyAskedQuestions(data.results[0].question, data.results[0].correct_answer)
         }
       })
   }
@@ -120,11 +142,11 @@ const App = () => {
         interactivity: {
           events: {
             onClick: {
-              enable: true,
+              enable: false,
               mode: "push",
             },
             onHover: {
-              enable: true,
+              enable: false,
               mode: "repulse",
             },
             resize: true,
@@ -190,7 +212,16 @@ const App = () => {
     />
       <div>
         <Routes>
-          <Route path="/" element={<HomeScreen category={categories} getQuestion={getQuestion} resetQA={resetQA} question={question} answer={answer}/>}/>    
+          <Route path="/" element={
+            <HomeScreen 
+              category={categories} 
+              getQuestion={getQuestion} 
+              resetQA={resetQA} 
+              question={question} 
+              answer={answer}
+              handleDifficultyChange={handleDifficultyChange}
+              />
+          }/>    
           <Route path="/past-questions" element={<PastQuestionsComponent pastQuestions={pastQuestions}/>}/>
         </Routes>
       </div>
