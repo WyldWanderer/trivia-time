@@ -1,11 +1,11 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import Particles from 'react-tsparticles';
 import HomeScreen from './components/HomeScreen'
 import { app } from './components/Database';
 import { getDatabase, ref, set, onValue } from '@firebase/database';
 import { Route, Routes} from "react-router-dom";
 import PastQuestionsComponent from './components/PastQuestions';
+import Particles from 'react-tsparticles';
 
 const App = () => {
   const categories = {
@@ -22,11 +22,11 @@ const App = () => {
     "Celebrities": 26,
     "Animals": 27,
     "Vehicles": 28
-  }
-  const [question, addQuestion] = useState("")
-  const [answer, addAnswer] = useState("")
-  const [pastQuestions, addToPastQuestions] = useState()
-  const [difficultyLevel, changeDifficulty] = useState()
+  };
+  const [question, addQuestion] = useState("");
+  const [answer, addAnswer] = useState("");
+  const [pastQuestions, addToPastQuestions] = useState();
+  const [difficultyLevel, changeDifficulty] = useState("easy");
 
   String.prototype.hashCode = function() {
     let hash = 0;
@@ -39,7 +39,7 @@ const App = () => {
       hash = hash & hash;
     }
     return hash;
-  }
+  };
 
   const fetchPastQuestions = () => {
     const db = getDatabase()
@@ -48,21 +48,35 @@ const App = () => {
       const data = snapshot.val()
       addToPastQuestions(data)
     })
-  }
+  };
 
   useEffect(() => {
     fetchPastQuestions()
-  }, [])
+  }, []);
 
   const resetQA = () => {
     addQuestion("")
     addAnswer("")
-  }
+  };
 
   const handleDifficultyChange = (e) => {
     let newDifficulty = e.target.name
     changeDifficulty(newDifficulty)
-  }
+    let activeButtons = document.getElementsByClassName("difficulty-buttons-active")
+    for(let i = 0; i < activeButtons.length; i++) {
+      activeButtons[i].className = "difficulty-buttons-inactive"
+    }
+    document.getElementById(`${newDifficulty}-btn`).className = "difficulty-buttons-active"
+
+    // if(document.getElementsByClassName("difficulty-buttons-active")) {
+    //   console.log("active button")
+    //   document.getElementsByClassName("difficulty-buttons-active").className = "difficulty-buttons-inactive"
+    //   document.getElementById(`${newDifficulty}-btn`).className = "difficulty-buttons-active"
+    // } else {
+    //   console.log("no active buttons")
+    //   document.getElementById(`${newDifficulty}-btn`).className = "difficulty-buttons-active"
+    // }
+  };
 
   const checkForPastQuestion = (question) => {
     const hashToCheck = question.hashCode()
@@ -102,8 +116,8 @@ const App = () => {
         addAnswer(data.results[0].correct_answer)
         trackAlreadyAskedQuestions(data.results[0].question, data.results[0].correct_answer)
         }
-      })
-  }
+      });
+  };
 
   const trackAlreadyAskedQuestions = (question, answer) => {
     const db = getDatabase()
@@ -115,8 +129,8 @@ const App = () => {
       answer : answer,
       dateAsked : dateAsked  
     })
-  }
- 
+  };
+
   const particlesInit = (main) => {
     //console.log(main);
     // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
@@ -129,87 +143,87 @@ const App = () => {
   return (
     <>
     <Particles
-      id="tsparticles"
-      init={particlesInit}
-      loaded={particlesLoaded}
-      options={{
-        background: {
-          color: {
-            value: "#494949",
-          },
+    id="tsparticles"
+    init={particlesInit}
+    loaded={particlesLoaded}
+    options={{
+      background: {
+        color: {
+          value: "#494949",
         },
-        fpsLimit: 60,
-        interactivity: {
-          events: {
-            onClick: {
-              enable: false,
-              mode: "push",
-            },
-            onHover: {
-              enable: false,
-              mode: "repulse",
-            },
-            resize: true,
-          },
-          modes: {
-            bubble: {
-              distance: 400,
-              duration: 2,
-              opacity: 0.8,
-              size: 40,
-            },
-            push: {
-              quantity: 4,
-            },
-            repulse: {
-              distance: 200,
-              duration: 0.4,
-            },
-          },
-        },
-        particles: {
-          color: {
-            value: "#ffffff",
-          },
-          links: {
-            color: "#ffffff",
-            distance: 150,
-            enable: true,
-            opacity: 0.5,
-            width: 1,
-          },
-          collisions: {
+      },
+      fpsLimit: 60,
+      interactivity: {
+        events: {
+          onClick: {
             enable: false,
+            mode: "push",
           },
-          move: {
-            direction: "none",
-            enable: true,
-            outMode: "bounce",
-            random: false,
-            speed: 1,
-            straight: false,
+          onHover: {
+            enable: false,
+            mode: "repulse",
           },
-          number: {
-            density: {
-              enable: true,
-              value_area: 800,
-            },
-            value: 40,
+          resize: true,
+        },
+        modes: {
+          bubble: {
+            distance: 400,
+            duration: 2,
+            opacity: 0.8,
+            size: 40,
           },
-          opacity: {
-            value: 0.5,
+          push: {
+            quantity: 4,
           },
-          shape: {
-            type: "circle",
-          },
-          size: {
-            random: true,
-            value: 5,
+          repulse: {
+            distance: 200,
+            duration: 0.4,
           },
         },
-        detectRetina: false,
-      }}
-    />
+      },
+      particles: {
+        color: {
+          value: "#ffffff",
+        },
+        links: {
+          color: "#ffffff",
+          distance: 150,
+          enable: true,
+          opacity: 0.5,
+          width: 1,
+        },
+        collisions: {
+          enable: false,
+        },
+        move: {
+          direction: "none",
+          enable: true,
+          outMode: "bounce",
+          random: false,
+          speed: 1,
+          straight: false,
+        },
+        number: {
+          density: {
+            enable: true,
+            value_area: 800,
+          },
+          value: 40,
+        },
+        opacity: {
+          value: 0.5,
+        },
+        shape: {
+          type: "circle",
+        },
+        size: {
+          random: true,
+          value: 5,
+        },
+      },
+      detectRetina: false,
+    }}
+  />
       <div>
         <Routes>
           <Route path="/" element={

@@ -1,6 +1,12 @@
 div {
   margin: 15px;
 }
+
+h3 {
+  font-size: large;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: aqua;
+}
 #title {
   text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -10,17 +16,46 @@ div {
   padding-bottom: 5px;
 }
 
-#cat-button {
+.cat-button {
   border-radius: 10px;
   margin: 2px;
   font-size: medium;
+  font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
-#category-buttons {
+.category-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap:wrap;
+}
+
+.difficulty-containter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap:wrap;
+  padding-top: 10px;
+}
+
+.difficulty-buttons-inactive {
+  border-radius: 10px;
+  margin: 2px;
+  font-size: large;
+  display: flex;
+  align-content: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+.difficulty-buttons-active {
+  border-radius: 10px;
+  margin: 2px;
+  font-size: large;
+  display: flex;
+  align-content: center;
+  background-color: fuchsia;
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif
 }
 
 #question {
