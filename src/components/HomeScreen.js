@@ -20,9 +20,9 @@ const HomeScreen = (props) => {
             </section>
             <section className="difficulty-container" >
                 <h3 >Select Difficulty</h3>
-                    <button id="easy-btn" name="easy" className="difficulty-buttons-active" onClick={props.handleDifficultyChange}>Easy</button>
-                    <button id="medium-btn" name="medium" className="difficulty-buttons-inactive" onClick={props.handleDifficultyChange}>Medium</button>
-                    <button id="hard-btn" name="hard" className="difficulty-buttons-inactive" onClick={props.handleDifficultyChange}>Hard</button>
+                    <button id="easy-btn" name="easy" className="difficulty-buttons-active" onClick={props.handleDifficultyChange}>Easy - $250</button>
+                    <button id="medium-btn" name="medium" className="difficulty-buttons-inactive" onClick={props.handleDifficultyChange}>Medium - $500</button>
+                    <button id="hard-btn" name="hard" className="difficulty-buttons-inactive" onClick={props.handleDifficultyChange}>Hard - $1000</button>
             </section>
             <span>
                 <h4 id="question">Question: {props.question}</h4>
