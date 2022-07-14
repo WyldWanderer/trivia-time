@@ -9,19 +9,20 @@ import Particles from 'react-tsparticles';
 
 const App = () => {
   const categories = {
-    "General Knowledge" : 9,
-    "Entertainment" : [10,11,12,13,14,15,16,29,31,32],
-    "Science & Nature" : 17,
+    "General Knowledge" : [9],
+    "Music & Theater" : [12, 13],
+    "Books & Comics" : [10, 29],
+    "Television" : [14, 31, 32],
+    "Celebrities & Films" : [11, 26],
+    "Games" : [15, 16],
+    "Science & Nature" : [17, 27],
     "Technology & Mathematics" : [18, 19, 30],
-    "Mythology" : 20,
-    "Sports" : 21,
-    "Geography" : 22,
-    "History" : 23,
-    "Politics" : 24,
-    "Art" : 25,
-    "Celebrities": 26,
-    "Animals": 27,
-    "Vehicles": 28
+    "Mythology" : [20],
+    "Sports" : [21],
+    "Geography" : [22],
+    "History & Politics" : [23, 24],
+    "Art" : [25],
+    "Vehicles": [28]
   };
   const [question, addQuestion] = useState("");
   const [answer, addAnswer] = useState("");
@@ -67,15 +68,6 @@ const App = () => {
       activeButtons[i].className = "difficulty-buttons-inactive"
     }
     document.getElementById(`${newDifficulty}-btn`).className = "difficulty-buttons-active"
-
-    // if(document.getElementsByClassName("difficulty-buttons-active")) {
-    //   console.log("active button")
-    //   document.getElementsByClassName("difficulty-buttons-active").className = "difficulty-buttons-inactive"
-    //   document.getElementById(`${newDifficulty}-btn`).className = "difficulty-buttons-active"
-    // } else {
-    //   console.log("no active buttons")
-    //   document.getElementById(`${newDifficulty}-btn`).className = "difficulty-buttons-active"
-    // }
   };
 
   const checkForPastQuestion = (question) => {
@@ -92,12 +84,7 @@ const App = () => {
   }
 
   const getQuestion = (category) => {
-    let categoryId = ""
-    if (category === "Entertainment" || category === "Technology & Mathematics") {  
-      categoryId = categories[category][Math.floor(Math.random() * categories[category].length)]
-    } else {
-      categoryId = categories[category]
-    }
+    let categoryId = categories[category][Math.floor(Math.random() * categories[category].length)]
     fetch(`https://opentdb.com/api.php?amount=1&category=${categoryId}&type=multiple&difficulty=${difficultyLevel}`)
       .then((response) => {
         if(response.ok) {
@@ -107,7 +94,6 @@ const App = () => {
         }
       })
       .then((data) => {
-        console.log(data)
         if(checkForPastQuestion(data.results[0].question)) {
           console.log("Fetched a question that was already asked, fetching something new")
           getQuestion(category)
@@ -117,18 +103,19 @@ const App = () => {
         trackAlreadyAskedQuestions(data.results[0].question, data.results[0].correct_answer)
         }
       });
-  };
 
-  const trackAlreadyAskedQuestions = (question, answer) => {
-    const db = getDatabase()
-    let hashedQuestion = question.hashCode()
-    let today = new Date()
-    let dateAsked = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
-    set(ref(db, "past_questions/" + hashedQuestion), {
-      question : question,
-      answer : answer,
-      dateAsked : dateAsked  
-    })
+    const trackAlreadyAskedQuestions = (question, answer) => {
+      const db = getDatabase()
+      let hashedQuestion = question.hashCode()
+      let today = new Date()
+      let dateAsked = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+      console.log(hashedQuestion)
+      set(ref(db, "past_questions/" + hashedQuestion), {
+        question : question,
+        answer : answer,
+        dateAsked : dateAsked  
+      })
+    }
   };
 
   const particlesInit = (main) => {
